@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Participants</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-4">
+
+    <h1 class="mb-3">Participants for: <span th:text="${event.title}">Event Title</span></h1>
+
+    <a th:href="@{/events}" class="btn btn-outline-secondary mb-3">Back to All Events</a>
+
+    <!-- Solo event -->
+    <ul class="list-group" th:if="${!event.teamEvent}">
+        <li class="list-group-item d-flex justify-content-between align-items-center" th:each="p : ${participants}">
+            <span>
+                <span th:text="${p.student.name}">Student Name</span>
+                &mdash;
+                <span th:text="${p.student.email}">Email</span>
+                &mdash; Attended:
+                <span th:text="${p.attended} ? 'Yes' : 'No'" th:classappend="${p.attended} ? 'text-success' : 'text-muted'">No</span>
+            </span>
+
+            <form th:if="${!p.attended and currentUser.role == 'ORGANIZER'}"
+                  th:action="@{/registrations/{id}/mark-attended(id=${p.id})}" method="post">
+                <button type="submit" class="btn btn-sm btn-success">Mark Attended</button>
+            </form>
+        </li>
+    </ul>
+
+    <!-- Team event -->
+    <div th:if="${event.teamEvent}">
+        <div class="card mb-3" th:each="p : ${participants}">
+            <div class="card-header">
+                <strong th:text="${p.teamName}">Team</strong>
+                <small class="text-muted">
+                    &mdash; leader: <span th:text="${p.student.name}">Leader</span>
+                </small>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="m : ${p.members}">
+                    <span>
+                        <span th:text="${m.name}">Member</span>
+                        <small class="text-muted" th:if="${m.email != null and !m.email.isEmpty()}" th:text="'(' + ${m.email} + ')'"></small>
+                        &mdash; Attended:
+                        <span th:text="${m.attended} ? 'Yes' : 'No'" th:classappend="${m.attended} ? 'text-success' : 'text-muted'">No</span>
+                    </span>
+                    <form th:if="${!m.attended and currentUser.role == 'ORGANIZER'}"
+                          th:action="@{/members/{id}/mark-attended(id=${m.id})}" method="post">
+                        <button type="submit" class="btn btn-sm btn-success">Mark Attended</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <p th:if="${participants.isEmpty()}" class="text-muted mt-3">No one has registered for this event yet.</p>
+
+</div>
+
+</body>
+</html>

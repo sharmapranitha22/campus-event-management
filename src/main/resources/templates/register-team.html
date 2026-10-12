@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Team Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5" style="max-width: 600px;">
+
+    <h1 class="mb-2">Team Registration</h1>
+    <p class="text-muted">
+        <span th:text="${event.title}">Event</span> &mdash;
+        <span th:text="${event.minTeamSize} + ' to ' + ${event.maxTeamSize}"></span> members per team
+        (including you)
+    </p>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form th:action="@{/events/{id}/register-team(id=${event.id})}" method="post">
+
+        <div class="mb-3">
+            <label class="form-label">Team name</label>
+            <input type="text" name="teamName" class="form-control" required>
+        </div>
+
+        <p class="fw-bold mb-1">Members (include yourself as member 1)</p>
+
+        <div class="row mb-2" th:each="i : ${#numbers.sequence(1, event.maxTeamSize)}">
+            <div class="col">
+                <input type="text" name="memberNames" class="form-control"
+                       th:placeholder="'Member ' + ${i} + ' name' + (${i} <= ${event.minTeamSize} ? ' (required)' : ' (optional)')">
+            </div>
+            <div class="col">
+                <input type="email" name="memberEmails" class="form-control" placeholder="Email (optional)">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success mt-2">Register Team</button>
+        <a th:href="@{/events}" class="btn btn-outline-secondary mt-2">Cancel</a>
+
+    </form>
+
+</div>
+
+</body>
+</html>

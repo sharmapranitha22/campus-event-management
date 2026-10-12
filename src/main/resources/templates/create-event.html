@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Event</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container mt-5" style="max-width: 600px;">
+
+    <h1 class="mb-4">Create a New Event</h1>
+
+    <form th:action="@{/events/create}" method="post">
+
+        <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <input type="text" name="description" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Venue</label>
+            <input type="text" name="venue" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Event Date and Time (optional)</label>
+            <input type="datetime-local" name="eventDateTime" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Registration Deadline (optional)</label>
+            <input type="datetime-local" name="registrationDeadline" class="form-control">
+        </div>
+
+        <div class="mb-3 form-check">
+            <input type="checkbox" name="teamEvent" id="teamEvent" class="form-check-input" onchange="toggleTeam()">
+            <label class="form-check-label" for="teamEvent">This is a team event (e.g. hackathon)</label>
+        </div>
+
+        <div id="teamSizes" style="display:none;">
+            <div class="row mb-3">
+                <div class="col">
+                    <label class="form-label">Min team size</label>
+                    <input type="number" name="minTeamSize" class="form-control" min="1" value="2">
+                </div>
+                <div class="col">
+                    <label class="form-label">Max team size</label>
+                    <input type="number" name="maxTeamSize" class="form-control" min="1" value="4">
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" id="maxLabel">Max Participants</label>
+            <input type="number" name="maxParticipants" class="form-control" min="1" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Create Event</button>
+        <a th:href="@{/events}" class="btn btn-outline-secondary">Cancel</a>
+
+    </form>
+
+</div>
+
+<script>
+    function toggleTeam() {
+        var isTeam = document.getElementById('teamEvent').checked;
+        document.getElementById('teamSizes').style.display = isTeam ? 'block' : 'none';
+        document.getElementById('maxLabel').innerText = isTeam ? 'Max Teams' : 'Max Participants';
+    }
+</script>
+
+</body>
+</html>
